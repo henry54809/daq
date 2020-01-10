@@ -88,6 +88,7 @@ class DhcpMonitor():
         self.callback(mode, target)
         self.target_ip = None
         self.target_mac = None
+        self.cleanup(forget=True)
         self.scan_start = int(time.time())
 
     def _dhcp_hangup(self):
@@ -97,5 +98,5 @@ class DhcpMonitor():
         LOGGER.error('DHCP monitor %s error: %s', self.name, e)
         if self.dhcp_log:
             self.dhcp_log.write('Monitor error %s\n' % e)
-        self.cleanup(forget=False)
         self.callback('error', None, exception=e)
+        self.cleanup(forget=True)

@@ -101,6 +101,7 @@ class ConnectedHost:
         self.target_ip = None
         self._loaded_config = None
         self.reload_config()
+        self._dhcp_listeners = []
         configurator.write_config(self._device_aux_path(), self._MODULE_CONFIG, self._loaded_config)
         assert self._loaded_config, 'config was not loaded'
         self.remaining_tests = self._get_enabled_tests()
@@ -114,7 +115,7 @@ class ConnectedHost:
     @staticmethod
     def make_runid():
         """Create a timestamped runid"""
-        return '%06x' % int(time.time())
+        return '%06x' % int(time.time() * 10e6)
 
     def _init_devdir(self):
         devdir = os.path.join(self._INST_DIR, 'run-port-%02d' % self.target_port)
@@ -247,6 +248,12 @@ class ConnectedHost:
         self._state_transition(_STATE.WAITING, _STATE.INIT)
         self.record_result('sanity', state=MODE.DONE)
         self.record_result('dhcp', state=MODE.EXEC)
+        _ = list(listener(self) for listener in self._dhcp_listeners)
+
+    def register_dhcp_ready_listener(self, callback):
+        """Registers callback for when the host is ready for activation"""
+        if callback:
+            self._dhcp_listeners.append(callback)
 
     def terminate(self, trigger=True):
         """Terminate this host"""
@@ -328,7 +335,7 @@ class ConnectedHost:
         hangup = lambda: self._monitor_error(Exception('startup scan hangup'))
         self.runner.monitor_stream('tcpdump', self._tcp_monitor.stream(),
                                    self._tcp_monitor.next_line,
-                                   hangup=hangup, error=self._monitor_error)
+                                   hangup=hangup, error=self._monitor_error, timeout_sec=None)
 
     def _base_start(self):
         try:
@@ -382,7 +389,7 @@ class ConnectedHost:
         self._tcp_monitor = helper
         self.runner.monitor_stream('tcpdump', self._tcp_monitor.stream(),
                                    self._tcp_monitor.next_line, hangup=self._monitor_complete,
-                                   error=self._monitor_error)
+                                   error=self._monitor_error, timeout_sec=None)
 
     def _monitor_complete(self):
         LOGGER.info('Target port %d scan complete', self.target_port)
