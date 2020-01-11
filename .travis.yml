@@ -15,7 +15,6 @@ install:
 script:
   - set -e
   - bin/test_daq
-language: python
 cache: pip
 env:
   global:
