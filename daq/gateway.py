@@ -130,7 +130,7 @@ class Gateway():
         self._scan_monitor = helper
         self.runner.monitor_stream('start%d' % self.port_set, helper.stream(),
                                    helper.next_line, hangup=self._scan_complete,
-                                   error=self._scan_error, timeout_sec=None)
+                                   error=self._scan_error)
 
     def _scan_complete(self):
         LOGGER.info('Gateway %d scan complete', self.port_set)

@@ -45,7 +45,7 @@ class DhcpMonitor():
         self.dhcp_traffic = helper
         self.runner.monitor_stream(self.name, self.dhcp_traffic.stream(),
                                    self._dhcp_line, hangup=self._dhcp_hangup,
-                                   error=self._dhcp_error)
+                                   error=self._dhcp_error, timeout_sec=120)
 
     def _dhcp_line(self):
         dhcp_line = self.dhcp_traffic.next_line()
@@ -88,7 +88,7 @@ class DhcpMonitor():
         self.callback(mode, target)
         self.target_ip = None
         self.target_mac = None
-        self.cleanup(forget=True)
+        self.cleanup()
         self.scan_start = int(time.time())
 
     def _dhcp_hangup(self):
@@ -99,4 +99,4 @@ class DhcpMonitor():
         if self.dhcp_log:
             self.dhcp_log.write('Monitor error %s\n' % e)
         self.callback('error', None, exception=e)
-        self.cleanup(forget=True)
+        self.cleanup()

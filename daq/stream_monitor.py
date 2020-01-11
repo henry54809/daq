@@ -13,8 +13,8 @@ LOGGER = logging.getLogger('stream')
 class StreamMonitor():
     """Monitor set of stream objects"""
 
-    def __init__(self, timeout_ms=None, idle_handler=None, loop_hook=None):
-        self.timeout_ms = timeout_ms
+    def __init__(self, timeout_sec=None, idle_handler=None, loop_hook=None):
+        self.timeout_sec = timeout_sec
         self.idle_handler = idle_handler
         self.loop_hook = loop_hook
         self.poller = select.poll()
@@ -26,7 +26,7 @@ class StreamMonitor():
 
     # pylint: disable=too-many-arguments
     def monitor(self, name, desc, callback=None, hangup=None, copy_to=None,
-                error=None, timeout_sec=120):
+                error=None, timeout_sec=None):
         """Start monitoring a specific descriptor"""
         fd = self.get_fd(desc)
         assert fd not in self.callbacks, 'Duplicate descriptor fd %d' % fd
@@ -148,7 +148,7 @@ class StreamMonitor():
                 LOGGER.error('Monitoring exception in callback: %s', e)
                 LOGGER.exception(e)
             self.log_monitors()
-            fds = self.poller.poll(self.timeout_ms)
+            fds = self.poller.poll(self.timeout_sec * 10e3 if self.timeout_sec else None)
             LOGGER.debug('Monitoring found fds %s', fds)
             if fds:
                 for fd, event in fds:

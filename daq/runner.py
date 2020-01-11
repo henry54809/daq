@@ -262,10 +262,9 @@ class DAQRunner:
         try:
             monitor = stream_monitor.StreamMonitor(idle_handler=self._handle_system_idle,
                                                    loop_hook=self._loop_hook,
-                                                   timeout_ms=20000) #Polling rate
+                                                   timeout_sec=20) #Polling rate
             self.stream_monitor = monitor
-            self.monitor_stream('faucet', self.faucet_events.sock, self._handle_faucet_events,
-                                timeout_sec=None)
+            self.monitor_stream('faucet', self.faucet_events.sock, self._handle_faucet_events)
             if self.event_trigger:
                 self._flush_faucet_events()
             LOGGER.info('Entering main event loop.')
@@ -418,13 +417,14 @@ class DAQRunner:
         if not target_mac:
             LOGGER.warning('DHCP target mac missing')
             return
+
         self._target_mac_ip[target_mac] = target_ip
         if target_mac in self.mac_targets:
             self._dhcp_info[self.mac_targets[target_mac]] = (state, target, gateway_set)
             self._check_and_activate_gateway(self.mac_targets[target_mac])
 
     def _check_and_activate_gateway(self, host):
-        #Host ready to be activated and DHCP happened
+        # Host ready to be activated and DHCP happened
         if host not in self._dhcp_info or host not in self._dhcp_ready:
             return
         state, target, gateway_set = self._dhcp_info[host]

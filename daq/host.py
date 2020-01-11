@@ -115,7 +115,7 @@ class ConnectedHost:
     @staticmethod
     def make_runid():
         """Create a timestamped runid"""
-        return '%06x' % int(time.time() * 10e6)
+        return '%06x' % int(time.time() * 10e3)
 
     def _init_devdir(self):
         devdir = os.path.join(self._INST_DIR, 'run-port-%02d' % self.target_port)
@@ -335,7 +335,7 @@ class ConnectedHost:
         hangup = lambda: self._monitor_error(Exception('startup scan hangup'))
         self.runner.monitor_stream('tcpdump', self._tcp_monitor.stream(),
                                    self._tcp_monitor.next_line,
-                                   hangup=hangup, error=self._monitor_error, timeout_sec=None)
+                                   hangup=hangup, error=self._monitor_error)
 
     def _base_start(self):
         try:
@@ -389,7 +389,7 @@ class ConnectedHost:
         self._tcp_monitor = helper
         self.runner.monitor_stream('tcpdump', self._tcp_monitor.stream(),
                                    self._tcp_monitor.next_line, hangup=self._monitor_complete,
-                                   error=self._monitor_error, timeout_sec=None)
+                                   error=self._monitor_error)
 
     def _monitor_complete(self):
         LOGGER.info('Target port %d scan complete', self.target_port)
