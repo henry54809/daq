@@ -115,7 +115,7 @@ class ConnectedHost:
     @staticmethod
     def make_runid():
         """Create a timestamped runid"""
-        return '%06x' % int(time.time() * 10e3)
+        return '%06x' % int(time.time())
 
     def _init_devdir(self):
         devdir = os.path.join(self._INST_DIR, 'run-port-%02d' % self.target_port)

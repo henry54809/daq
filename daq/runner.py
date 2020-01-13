@@ -167,7 +167,7 @@ class DAQRunner:
                 self._activate_port(port, True)
         else:
             if port in self.port_targets:
-                self.target_set_complete(self.port_targets[port], 'port not active')
+                self.target_set_complete(port, 'port not active')
             if port in self._active_ports:
                 if self._active_ports[port] is not True:
                     self._direct_port_traffic(self._active_ports[port], port, None)
@@ -209,13 +209,13 @@ class DAQRunner:
         self._handle_faucet_events()
         all_idle = True
         # Iterate over copy of list to prevent fail-on-modification.
-        for target_set in list(self.port_targets.values()):
+        for target_port, target_set in copy.copy(self.port_targets).items():
             try:
                 if target_set.is_running():
                     all_idle = False
                     target_set.idle_handler()
                 else:
-                    self.target_set_complete(target_set, 'target set not active')
+                    self.target_set_complete(target_port, 'target set not active')
             except Exception as e:
                 self.target_set_error(target_set.target_port, e)
         if not self.event_trigger:

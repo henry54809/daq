@@ -81,7 +81,7 @@ class Gateway():
         log_file = os.path.join(self.tmpdir, 'dhcp_monitor.txt')
         self.dhcp_monitor = dhcp_monitor.DhcpMonitor(self.runner, host,
                                                      self._dhcp_callback, log_file)
-        self.dhcp_monitor.start()
+        self.dhcp_monitor.start(timeout_sec=120)
 
         ping_retry = self._PING_RETRY_COUNT
         while not self._ping_test(host, dummy):
@@ -100,6 +100,7 @@ class Gateway():
         self.host.cmd('./increase_leasetime')
         self.activated = True
         self._scan_finalize()
+        self.dhcp_monitor.cleanup()
 
     def _scan_finalize(self, forget=True):
         if self._scan_monitor:

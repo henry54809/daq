@@ -31,7 +31,7 @@ class DhcpMonitor():
         self.target_mac = None
         self.dhcp_log = None
 
-    def start(self):
+    def start(self, timeout_sec=None):
         """Start monitoring DHCP"""
         LOGGER.info('DHCP monitor %s waiting for replies...', self.name,)
         if self.log_file:
@@ -45,7 +45,7 @@ class DhcpMonitor():
         self.dhcp_traffic = helper
         self.runner.monitor_stream(self.name, self.dhcp_traffic.stream(),
                                    self._dhcp_line, hangup=self._dhcp_hangup,
-                                   error=self._dhcp_error, timeout_sec=120)
+                                   error=self._dhcp_error, timeout_sec=timeout_sec)
 
     def _dhcp_line(self):
         dhcp_line = self.dhcp_traffic.next_line()
@@ -88,7 +88,6 @@ class DhcpMonitor():
         self.callback(mode, target)
         self.target_ip = None
         self.target_mac = None
-        self.cleanup()
         self.scan_start = int(time.time())
 
     def _dhcp_hangup(self):
