@@ -61,6 +61,7 @@ class ConnectedHost:
     """Class managing a device-under-test"""
 
     _MONITOR_SCAN_SEC = 30
+    _DEFAULT_TIMEOUT = 350
     _STARTUP_MIN_TIME_SEC = 5
     _INST_DIR = "inst/"
     _DEVICE_PATH = "device/%s"
@@ -147,6 +148,10 @@ class ConnectedHost:
     def _test_enabled(self, test):
         test_module = self._loaded_config['modules'].get(test)
         return test in self._CORE_TESTS or test_module and test_module.get('enabled', True)
+
+    def _get_test_timeout(self, test):
+        test_module = self._loaded_config['modules'].get(test)
+        return test_module.get('timeout', self._DEFAULT_TIMEOUT) if test_module else None
 
     def _get_enabled_tests(self):
         return list(filter(self._test_enabled, self.config.get('test_list')))
@@ -459,7 +464,8 @@ class ConnectedHost:
         }
 
         self.test_host = docker_test.DockerTest(self.runner, self.target_port, self.devdir,
-                                                test_name)
+                                                test_name, 
+                                                timeout_sec=self._get_test_timeout(test_name))
         self.test_port = self.runner.allocate_test_port(self.target_port)
         if 'ext_loip' in self.config:
             ext_loip = self.config['ext_loip'].replace('@', '%d')
