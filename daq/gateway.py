@@ -100,7 +100,6 @@ class Gateway():
         self.host.cmd('./increase_leasetime')
         self.activated = True
         self._scan_finalize()
-        self.dhcp_monitor.cleanup()
 
     def _scan_finalize(self, forget=True):
         if self._scan_monitor:
