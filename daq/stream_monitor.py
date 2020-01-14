@@ -36,7 +36,8 @@ class StreamMonitor():
             callback = lambda: self.copy_data(name, desc, copy_to)
         LOGGER.debug('Monitoring start %s fd %d', name, fd, )
         self.callbacks[fd] = (name, callback, hangup, error,
-                              datetime.fromtimestamp(time.time()) + timedelta(seconds=timeout_sec) if timeout_sec else None)
+                              datetime.fromtimestamp(time.time())
+                              + timedelta(seconds=timeout_sec) if timeout_sec else None)
         self.poller.register(fd, select.POLLHUP | select.POLLIN)
         self.log_monitors()
 

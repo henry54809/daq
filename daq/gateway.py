@@ -81,7 +81,7 @@ class Gateway():
         log_file = os.path.join(self.tmpdir, 'dhcp_monitor.txt')
         self.dhcp_monitor = dhcp_monitor.DhcpMonitor(self.runner, host,
                                                      self._dhcp_callback, log_file)
-        self.dhcp_monitor.start(timeout_sec=120)
+        self.dhcp_monitor.start()
 
         ping_retry = self._PING_RETRY_COUNT
         while not self._ping_test(host, dummy):
