@@ -16,6 +16,7 @@ class DockerTest():
     IMAGE_NAME_FORMAT = 'daq/test_%s'
     CONTAINER_PREFIX = 'daq'
 
+    # pylint: disable=too-many-arguments
     def __init__(self, runner, target_port, tmpdir, test_name, timeout_sec=None):
         self.target_port = target_port
         self.tmpdir = tmpdir

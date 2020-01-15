@@ -464,7 +464,7 @@ class ConnectedHost:
         }
 
         self.test_host = docker_test.DockerTest(self.runner, self.target_port, self.devdir,
-                                                test_name, 
+                                                test_name,
                                                 timeout_sec=self._get_test_timeout(test_name))
         self.test_port = self.runner.allocate_test_port(self.target_port)
         if 'ext_loip' in self.config:
