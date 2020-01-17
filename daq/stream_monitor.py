@@ -161,6 +161,4 @@ class StreamMonitor():
                 name, _, _, on_error, timeout = frozen_callbacks[fd]
                 if timeout and datetime.fromtimestamp(time.time()) >= timeout:
                     self.error_handler(fd, TimeoutError("Timed out."), name, on_error)
-                    if fd in self.callbacks:
-                        self.forget(fd)
         return False

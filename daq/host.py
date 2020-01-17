@@ -253,12 +253,12 @@ class ConnectedHost:
         self._state_transition(_STATE.WAITING, _STATE.INIT)
         self.record_result('sanity', state=MODE.DONE)
         self.record_result('dhcp', state=MODE.EXEC)
-        _ = list(listener(self) for listener in self._dhcp_listeners)
+        _ = [listener(self) for listener in self._dhcp_listeners]
 
     def register_dhcp_ready_listener(self, callback):
         """Registers callback for when the host is ready for activation"""
-        if callback:
-            self._dhcp_listeners.append(callback)
+        assert callable(callback), "DHCP listener callback is not callable"
+        self._dhcp_listeners.append(callback)
 
     def terminate(self, trigger=True):
         """Terminate this host"""
@@ -277,7 +277,7 @@ class ConnectedHost:
                 LOGGER.error('Target port %d terminating test: %s', self.target_port, e)
                 LOGGER.exception(e)
         if trigger:
-            self.runner.target_set_complete(self, 'Target port %d termination' % self.target_port)
+            self.runner.target_set_complete(self.target_port, 'Target port %d termination' % self.target_port)
 
     def idle_handler(self):
         """Trigger events from idle state"""

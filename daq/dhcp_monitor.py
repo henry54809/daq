@@ -98,4 +98,4 @@ class DhcpMonitor():
         if self.dhcp_log:
             self.dhcp_log.write('Monitor error %s\n' % e)
         self.callback('error', None, exception=e)
-        self.cleanup()
+        self.cleanup(forget=False)

@@ -595,6 +595,8 @@ class DAQRunner:
         LOGGER.info('Remaining target sets: %s', list(self.port_targets.keys()))
 
     def _detach_gateway(self, target_port):
+        if target_port not in self.port_gateways: 
+            return
         target_gateway = self.port_gateways[target_port]
         del self.port_gateways[target_port]
         target_mac = self._active_ports[target_port]
