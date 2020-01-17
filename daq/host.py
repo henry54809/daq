@@ -96,6 +96,8 @@ class ConnectedHost:
         self.test_port = None
         self._startup_time = None
         self._monitor_scan_sec = int(config.get('monitor_scan_sec', self._MONITOR_SCAN_SEC))
+        _default_timeout_sec = int(config.get('default_timeout_sec', self._DEFAULT_TIMEOUT))
+        self._default_timeout_sec = _default_timeout_sec if _default_timeout_sec else None
         self._fail_hook = config.get('fail_hook')
         self._mirror_intf_name = None
         self._tcp_monitor = None
@@ -151,7 +153,7 @@ class ConnectedHost:
 
     def _get_test_timeout(self, test):
         test_module = self._loaded_config['modules'].get(test)
-        return test_module.get('timeout', self._DEFAULT_TIMEOUT) if test_module else None
+        return test_module.get('timeout', self._default_timeout_sec) if test_module else None
 
     def _get_enabled_tests(self):
         return list(filter(self._test_enabled, self.config.get('test_list')))
@@ -277,7 +279,8 @@ class ConnectedHost:
                 LOGGER.error('Target port %d terminating test: %s', self.target_port, e)
                 LOGGER.exception(e)
         if trigger:
-            self.runner.target_set_complete(self.target_port, 'Target port %d termination' % self.target_port)
+            self.runner.target_set_complete(self.target_port, 'Target port %d termination'
+                                            % self.target_port)
 
     def idle_handler(self):
         """Trigger events from idle state"""
@@ -462,10 +465,9 @@ class ConnectedHost:
             'type_base': self._type_aux_path(),
             'scan_base': self.scan_base
         }
-
+        test_timeout = self._get_test_timeout(test_name)
         self.test_host = docker_test.DockerTest(self.runner, self.target_port, self.devdir,
-                                                test_name,
-                                                timeout_sec=self._get_test_timeout(test_name))
+                                                test_name, timeout_sec=test_timeout)
         self.test_port = self.runner.allocate_test_port(self.target_port)
         if 'ext_loip' in self.config:
             ext_loip = self.config['ext_loip'].replace('@', '%d')

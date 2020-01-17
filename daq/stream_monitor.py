@@ -34,10 +34,10 @@ class StreamMonitor():
             assert not callback, 'Both callback and copy_to set'
             self.make_nonblock(desc)
             callback = lambda: self.copy_data(name, desc, copy_to)
-        LOGGER.debug('Monitoring start %s fd %d', name, fd, )
-        self.callbacks[fd] = (name, callback, hangup, error,
-                              datetime.fromtimestamp(time.time())
-                              + timedelta(seconds=timeout_sec) if timeout_sec else None)
+        LOGGER.debug('Monitoring start %s fd %d', name, fd)
+        timeout = datetime.fromtimestamp(time.time()) + \
+                  timedelta(seconds=timeout_sec) if timeout_sec else None
+        self.callbacks[fd] = (name, callback, hangup, error, timeout)
         self.poller.register(fd, select.POLLHUP | select.POLLIN)
         self.log_monitors()
 
@@ -153,8 +153,8 @@ class StreamMonitor():
             LOGGER.debug('Monitoring found fds %s', fds)
             if fds:
                 for fd, event in fds:
-                    if fd in self.callbacks:
-                        self.process_poll_result(event, fd) #Monitoring set could be modified
+                    if fd in self.callbacks: # Monitoring set could be modified
+                        self.process_poll_result(event, fd)
             # check for timeouts
             frozen_callbacks = copy.copy(self.callbacks)
             for fd in frozen_callbacks:
