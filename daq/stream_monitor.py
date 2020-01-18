@@ -116,7 +116,7 @@ class StreamMonitor():
         """Error handler for the given fd"""
         msg = '' if handler else ' (no handler)'
         LOGGER.error('Monitoring error handling %s fd %d%s: %s', name, fd, msg, e)
-        assert fd not in self.callbacks, 'handling fd not forgotten' % fd
+        assert fd not in self.callbacks, 'handling fd %d not forgotten' % fd
         if handler:
             try:
                 handler(e)

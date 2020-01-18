@@ -103,7 +103,7 @@ port-02 module_config modules
     "enabled": true
   },
   "hold": {
-    "enabled": false
+    "enabled": true 
   },
   "macoui": {
     "enabled": true
