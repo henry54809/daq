@@ -64,7 +64,7 @@ class StreamMonitor():
         self.poller.unregister(fd)
         self.log_monitors()
 
-    def log_monitors(self):
+    def log_monitors(self, as_info=False):
         """Log all active monitors"""
         log_str = ''
         count = 0
@@ -72,7 +72,10 @@ class StreamMonitor():
             name = self.callbacks[fd][0]
             log_str = log_str + ', %s fd %d' % (name, fd)
             count += 1
-        LOGGER.debug('Monitoring %d fds %s', count, log_str[2:])
+
+        log_func = LOGGER.info if as_info else LOGGER.debug
+        log_func('Monitoring %d fds %s', count, log_str[2:])
+
         return count
 
     def trigger_callback(self, fd):
@@ -113,6 +116,7 @@ class StreamMonitor():
         """Error handler for the given fd"""
         msg = '' if handler else ' (no handler)'
         LOGGER.error('Monitoring error handling %s fd %d%s: %s', name, fd, msg, e)
+        assert fd not in self.callbacks, 'handling fd not forgotten' % fd
         if handler:
             try:
                 handler(e)
