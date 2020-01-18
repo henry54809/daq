@@ -262,7 +262,7 @@ class DAQRunner:
         try:
             monitor = stream_monitor.StreamMonitor(idle_handler=self._handle_system_idle,
                                                    loop_hook=self._loop_hook,
-                                                   timeout_sec=20) #Polling rate
+                                                   timeout_sec=20) # Polling rate
             self.stream_monitor = monitor
             self.monitor_stream('faucet', self.faucet_events.sock, self._handle_faucet_events)
             if self.event_trigger:
@@ -408,7 +408,7 @@ class DAQRunner:
             assert not target, 'unexpected exception with target'
             LOGGER.error('DHCP exception for gw%02d: %s', gateway_set, exception)
             LOGGER.exception(exception)
-            self._terminate_gateway_set(gateway_set)
+            self._terminate_gateway_set(gateway_set, error=exception)
             return
 
         target_mac, target_ip, delta_sec = target['mac'], target['ip'], target['delta']
@@ -492,7 +492,7 @@ class DAQRunner:
 
         return gateway, ready_devices
 
-    def _terminate_gateway_set(self, gateway_set):
+    def _terminate_gateway_set(self, gateway_set, error=False):
         if gateway_set not in self._gateway_sets:
             LOGGER.warning('Gateway set %s not found in %s', gateway_set, self._gateway_sets)
             return
