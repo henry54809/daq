@@ -110,8 +110,11 @@ class DockerTest():
             LOGGER.debug('Target port %d docker finalize', self.target_port)
             self.runner.remove_host(self.docker_host)
             if forget:
-                self.runner.monitor_forget(self.pipe.stdout)
-                self.pipe = None
+                try:
+                    self.runner.monitor_forget(self.pipe.stdout)
+                    self.pipe = None
+                except Exception as e:
+                    LOGGER.error(e)
             return_code = self.docker_host.terminate()
             self.docker_host = None
             self.docker_log.close()
