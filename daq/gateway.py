@@ -199,7 +199,10 @@ class Gateway():
         assert not self.targets, 'gw %s has targets %s' % (self.name, self.targets)
         LOGGER.info('Terminating gateway %d/%s', self.port_set, self.name)
         if self.dhcp_monitor:
-            self.dhcp_monitor.cleanup()
+            try:
+                self.dhcp_monitor.cleanup()
+            except Exception as e:
+                LOGGER.exception(e)
         self._scan_finalize()
         if self.host:
             try:

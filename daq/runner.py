@@ -408,7 +408,7 @@ class DAQRunner:
             assert not target, 'unexpected exception with target'
             LOGGER.error('DHCP exception for gw%02d: %s', gateway_set, exception)
             LOGGER.exception(exception)
-            self._terminate_gateway_set(gateway_set, error=exception)
+            self._terminate_gateway_set(gateway_set)
             return
 
         target_mac, target_ip, delta_sec = target['mac'], target['ip'], target['delta']
@@ -492,7 +492,7 @@ class DAQRunner:
 
         return gateway, ready_devices
 
-    def _terminate_gateway_set(self, gateway_set, error=False):
+    def _terminate_gateway_set(self, gateway_set):
         if gateway_set not in self._gateway_sets:
             LOGGER.warning('Gateway set %s not found in %s', gateway_set, self._gateway_sets)
             return
@@ -500,7 +500,6 @@ class DAQRunner:
         gateway = self._device_groups[group_name]
         ports = [target['port'] for target in gateway.get_targets()]
         LOGGER.info('Terminating gateway group %s set %s, ports %s', group_name, gateway_set, ports)
-        handler = self.target_set_error if error else self.target_set_complete
         for target_port in ports:
             self.target_set_error(target_port, DaqException('terminated'))
 
