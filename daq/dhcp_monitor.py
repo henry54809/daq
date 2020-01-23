@@ -68,10 +68,12 @@ class DhcpMonitor():
             self.dhcp_log.close()
             self.dhcp_log = None
         if self.dhcp_traffic:
-            if self.dhcp_traffic.stream():
-                self.runner.monitor_forget(self.dhcp_traffic.stream())
-            self.dhcp_traffic.terminate()
-            self.dhcp_traffic = None
+            self.runner.monitor_forget(self.dhcp_traffic.stream())
+            self.__terminate_traffic()
+
+    def __terminate_traffic(self):
+        self.dhcp_traffic.terminate()
+        self.dhcp_traffic = None
 
     def _dhcp_success(self):
         assert self.target_ip, 'dhcp ACK missing ip address'
@@ -91,11 +93,12 @@ class DhcpMonitor():
         self.scan_start = int(time.time())
 
     def _dhcp_hangup(self):
+        self.__terminate_traffic()
         self._dhcp_error(Exception('dhcp hangup'))
 
     def _dhcp_error(self, e):
         LOGGER.error('DHCP monitor %s error: %s', self.name, e)
         if self.dhcp_log:
             self.dhcp_log.write('Monitor error %s\n' % e)
-        self.callback('error', None, exception=e)
         self.cleanup()
+        self.callback('error', None, exception=e)
