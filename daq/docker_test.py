@@ -123,6 +123,7 @@ class DockerTest():
     def _docker_complete(self):
         try:
             assert self.pipe, 'complete without active pipe'
+            self.pipe = None
             return_code = self._docker_finalize()
             exception = None
         except Exception as e:
