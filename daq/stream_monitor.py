@@ -93,16 +93,15 @@ class StreamMonitor():
                 os.read(fd, 1024)
         except Exception as e:
             if fd in self.callbacks:
-                self.callbacks[fd][5].close()
-                self.forget(fd)
-            self.error_handler(fd, e, name, on_error)
+                if self.trigger_hangup(self, fd, e):
+                    self.error_handler(fd, e, name, on_error)
 
     def trigger_hangup(self, fd, event):
         """Trigger hangup callback for the given fd"""
         name = self.callbacks[fd][0]
         callback = self.callbacks[fd][2]
         on_error = self.callbacks[fd][3]
-        self.callbacks[fd][5].close() # close the stream
+        self.callbacks[fd][5].close()
         try:
             self.forget(fd)
             if callback:
@@ -113,6 +112,8 @@ class StreamMonitor():
                 LOGGER.debug('Monitoring no hangup fd %d because %d (%s)', fd, event, name)
         except Exception as e:
             self.error_handler(fd, e, name, on_error)
+            return False
+        return True
 
     def error_handler(self, fd, e, name, handler):
         """Error handler for the given fd"""
@@ -166,8 +167,7 @@ class StreamMonitor():
             for fd in frozen_callbacks:
                 name, _, _, on_error, timeout, _ = frozen_callbacks[fd]
                 if timeout and datetime.fromtimestamp(time.time()) >= timeout:
-                    if fd in self.callbacks:
-                        self.callbacks[fd][5].close() # close the stream
-                        self.forget(fd)
-                    self.error_handler(fd, TimeoutError("Timed out."), name, on_error)
+                    e = TimeoutError('timeout')
+                    if fd not in self.callbacks or self.trigger_hangup(self, fd, e):
+                        self.error_handler(fd, e, name, on_error)
         return False
