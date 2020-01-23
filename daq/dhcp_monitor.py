@@ -68,9 +68,9 @@ class DhcpMonitor():
             self.dhcp_log.close()
             self.dhcp_log = None
         if self.dhcp_traffic:
-            if self.dhcp_traffic.stream() and not self.dhcp_traffic.stream().closed:
+            if self.dhcp_traffic.stream():
                 self.runner.monitor_forget(self.dhcp_traffic.stream())
-                self.dhcp_traffic.terminate()
+            self.dhcp_traffic.terminate()
             self.dhcp_traffic = None
 
     def _dhcp_success(self):
