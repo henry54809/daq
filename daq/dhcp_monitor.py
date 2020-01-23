@@ -69,11 +69,8 @@ class DhcpMonitor():
             self.dhcp_log = None
         if self.dhcp_traffic:
             self.runner.monitor_forget(self.dhcp_traffic.stream())
-            self.__terminate_traffic()
-
-    def __terminate_traffic(self):
-        self.dhcp_traffic.terminate()
-        self.dhcp_traffic = None
+            self.dhcp_traffic.terminate()
+            self.dhcp_traffic = None
 
     def _dhcp_success(self):
         assert self.target_ip, 'dhcp ACK missing ip address'
@@ -93,7 +90,7 @@ class DhcpMonitor():
         self.scan_start = int(time.time())
 
     def _dhcp_hangup(self):
-        self.__terminate_traffic()
+        self.dhcp_traffic = None
         self._dhcp_error(Exception('dhcp hangup'))
 
     def _dhcp_error(self, e):
