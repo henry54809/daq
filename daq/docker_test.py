@@ -73,7 +73,7 @@ class DockerTest():
             self.pipe = host.activate(log_name=None)
             # Docker tests don't use DHCP, so manually set up DNS.
             host.cmd('echo nameserver $GATEWAY_IP > /etc/resolv.conf')
-            self.docker_log = host.open_log()
+            self.docker_log = None #  host.open_log()
             self.runner.monitor_stream(self.host_name, self.pipe.stdout, copy_to=self.docker_log,
                                        hangup=self._docker_complete,
                                        error=self._docker_error, timeout_sec=self.timeout_sec)
