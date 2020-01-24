@@ -85,13 +85,14 @@ class StreamMonitor():
         on_error = self.callbacks[fd][3]
         try:
             if callback:
-                LOGGER.debug('Monitoring callback fd %d (%s) start', fd, name)
+                LOGGER.info('Monitoring callback fd %d (%s) start', fd, name)
                 callback()
-                LOGGER.debug('Monitoring callback fd %d (%s) done', fd, name)
+                LOGGER.info('Monitoring callback fd %d (%s) done', fd, name)
             else:
-                LOGGER.debug('Monitoring flush fd %d (%s)', fd, name)
+                LOGGER.info('Monitoring flush fd %d (%s)', fd, name)
                 os.read(fd, 1024)
         except Exception as e:
+            LOGGER.exception(e)
             if fd in self.callbacks:
                 if self.trigger_hangup(fd, e):
                     self.error_handler(fd, e, name, on_error)
@@ -111,6 +112,7 @@ class StreamMonitor():
             else:
                 LOGGER.debug('Monitoring no hangup fd %d because %d (%s)', fd, event, name)
         except Exception as e:
+            LOGGER.exception(e)
             self.error_handler(fd, e, name, on_error)
             return False
         return True
