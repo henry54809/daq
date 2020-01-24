@@ -121,7 +121,7 @@ class StreamMonitor():
     def error_handler(self, fd, e, name, handler):
         """Error handler for the given fd"""
         msg = '' if handler else ' (no handler)'
-        LOGGER.error('Monitoring error handling %s fd %d%s: %s', name, fd, msg, e)
+        LOGGER.debug('Monitoring error handling %s fd %d%s: %s', name, fd, msg, e)
         assert fd not in self.callbacks, 'handling fd %d not forgotten' % fd
         if handler:
             try:
@@ -170,7 +170,7 @@ class StreamMonitor():
             for fd in frozen_callbacks:
                 name, _, _, on_error, timeout, _ = frozen_callbacks[fd]
                 if timeout and datetime.fromtimestamp(time.time()) >= timeout:
-                    LOGGER.info('Monitoring timeout fd %d done (%s)', fd, name)
+                    LOGGER.debug('Monitoring timeout fd %d done (%s)', fd, name)
                     e = TimeoutError('timeout')
                     if fd not in self.callbacks or self.trigger_hangup(fd, e):
                         self.error_handler(fd, e, name, on_error)
