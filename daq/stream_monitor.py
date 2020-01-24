@@ -169,6 +169,7 @@ class StreamMonitor():
             for fd in frozen_callbacks:
                 name, _, _, on_error, timeout, _ = frozen_callbacks[fd]
                 if timeout and datetime.fromtimestamp(time.time()) >= timeout:
+                    LOGGER.info('Monitoring timeout fd %d done (%s)', fd, name)
                     e = TimeoutError('timeout')
                     if fd not in self.callbacks or self.trigger_hangup(fd, e):
                         self.error_handler(fd, e, name, on_error)
