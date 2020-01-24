@@ -85,11 +85,11 @@ class StreamMonitor():
         on_error = self.callbacks[fd][3]
         try:
             if callback:
-                LOGGER.info('Monitoring callback fd %d (%s) start', fd, name)
+                LOGGER.debug('Monitoring callback fd %d (%s) start', fd, name)
                 callback()
-                LOGGER.info('Monitoring callback fd %d (%s) done', fd, name)
+                LOGGER.debug('Monitoring callback fd %d (%s) done', fd, name)
             else:
-                LOGGER.info('Monitoring flush fd %d (%s)', fd, name)
+                LOGGER.debug('Monitoring flush fd %d (%s)', fd, name)
                 os.read(fd, 1024)
         except Exception as e:
             LOGGER.exception(e)
