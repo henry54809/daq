@@ -16,7 +16,7 @@ cp misc/system_base.conf local/system.conf
 rm -rf inst/tmp_site && mkdir -p inst/tmp_site
 cp misc/report_template.md inst/tmp_site/
 
-cmd/run -s site_path=inst/tmp_site
+cmd/run -k -s site_path=inst/tmp_site hold_exception=finalize
 more inst/result.log | tee -a $TEST_RESULTS
 cat inst/reports/report_9a02571e8f00_*.md | redact | tee -a $TEST_RESULTS
 
@@ -24,7 +24,7 @@ cat inst/reports/report_9a02571e8f00_*.md | redact | tee -a $TEST_RESULTS
 echo Open port tests | tee -a $TEST_RESULTS
 
 # Check that an open port causes the appropriate failure.
-cmd/run -s startup_faux_opts=telnet
+cmd/run -k -s startup_faux_opts=telnet hold_exception=callback
 more inst/result.log | tee -a $TEST_RESULTS
 cat inst/run-port-01/nodes/nmap01/activate.log
 fgrep 'security.ports.nmap' inst/reports/report_9a02571e8f00_*.md | tee -a $TEST_RESULTS

@@ -73,10 +73,12 @@ class DockerTest():
             self.pipe = host.activate(log_name=None)
             # Docker tests don't use DHCP, so manually set up DNS.
             host.cmd('echo nameserver $GATEWAY_IP > /etc/resolv.conf')
-            self.docker_log = None #  host.open_log()
+            self.docker_log = host.open_log()
             self.runner.monitor_stream(self.host_name, self.pipe.stdout, copy_to=self.docker_log,
                                        hangup=self._docker_complete,
                                        error=self._docker_error, timeout_sec=self.timeout_sec)
+            if self._should_raise_test_exception('callback'):
+                self.docker_log.close()
         except:
             host.terminate()
             self.runner.monitor_forget(self.pipe.stdout)
@@ -117,8 +119,13 @@ class DockerTest():
             self.docker_host = None
             self.docker_log.close()
             self.docker_log = None
+            if self._should_raise_test_exception('finalize'):
+                raise Exception('Finalize hold exception')
             return return_code
         return None
+
+    def _should_raise_test_exception(self, key):
+        return self.runner.config.get('hold_exception') == key and self.test_name == 'hold'
 
     def _docker_complete(self):
         try:
