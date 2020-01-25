@@ -166,7 +166,7 @@ git status --porcelain | tee -a $TEST_RESULTS
 
 # Try various exception handling conditions.
 cp misc/system_multi.conf local/system.conf
-cmd/run -s -k test_01_exception=finalize test_02_exception=callback test_03_exception=callback
+cmd/run -s test_01_exception=finalize test_02_exception=callback test_03_exception=callback
 cat inst/result.log | sort | tee -a $TEST_RESULTS
 
 echo Done with tests | tee -a $TEST_RESULTS

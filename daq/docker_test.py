@@ -126,7 +126,7 @@ class DockerTest():
 
     def _should_raise_test_exception(self, trigger_value):
         key = 'test_%02d_exception' % self.target_port
-        return self.runner.config.get(key) == trigger_value and self.test_name == 'hold'
+        return self.runner.config.get(key) == trigger_value and self.test_name == 'ping'
 
     def _docker_complete(self):
         try:
