@@ -125,7 +125,7 @@ class DockerTest():
         return None
 
     def _should_raise_test_exception(self, key):
-        return self.runner.config.get('hold_exception') == key and self.test_name == 'hold'
+        return self.runner.config.get('test_exception') == key and self.test_name == 'fail'
 
     def _docker_complete(self):
         try:
