@@ -120,7 +120,7 @@ class DockerTest():
             self.docker_log.close()
             self.docker_log = None
             if self._should_raise_test_exception('finalize'):
-                raise Exception('Finalize hold exception')
+                raise Exception('finalize')
             return return_code
         return None
 

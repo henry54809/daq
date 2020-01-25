@@ -94,10 +94,9 @@ class StreamMonitor():
         except Exception as e:
             if fd in self.callbacks:
                 if self.trigger_hangup(fd, e):
-                    self.error_handler(fd, e, name, on_error)
+                    self.error_handler(e, name, on_error)
             else:
-                LOGGER.error('Monitoring callback exception %s fd %d', name, fd)
-                LOGGER.exception(e)
+                self.error_handler(e, name, on_error)
 
     def trigger_hangup(self, fd, event):
         """Trigger hangup callback for the given fd"""
@@ -114,20 +113,19 @@ class StreamMonitor():
             else:
                 LOGGER.debug('Monitoring no hangup fd %d because %d (%s)', fd, event, name)
         except Exception as e:
-            self.error_handler(fd, e, name, on_error)
+            self.error_handler(e, name, on_error)
             return False
         return True
 
-    def error_handler(self, fd, e, name, handler):
-        """Error handler for the given fd"""
+    def error_handler(self, e, name, handler):
+        """call error handler"""
         msg = '' if handler else ' (no handler)'
-        LOGGER.debug('Monitoring error handling %s fd %d%s: %s', name, fd, msg, e)
-        assert fd not in self.callbacks, 'handling fd %d not forgotten' % fd
+        LOGGER.debug('Monitoring error handling %s %s: %s', name, msg, e)
         if handler:
             try:
                 handler(e)
             except Exception as handler_exception:
-                LOGGER.error('Monitoring exception %s fd %d done: %s', name, fd, handler_exception)
+                LOGGER.error('Monitoring exception %s fail: %s', name, handler_exception)
                 LOGGER.exception(handler_exception)
         else:
             LOGGER.exception(e)
@@ -173,5 +171,5 @@ class StreamMonitor():
                     LOGGER.debug('Monitoring timeout fd %d done (%s)', fd, name)
                     e = TimeoutError('timeout')
                     if fd not in self.callbacks or self.trigger_hangup(fd, e):
-                        self.error_handler(fd, e, name, on_error)
+                        self.error_handler(e, name, on_error)
         return False

@@ -542,7 +542,9 @@ class DAQRunner:
             target_set.record_result(target_set.test_name, exception=err_str)
             self.target_set_complete(target_port, err_str)
         else:
-            self._target_set_finalize(target_port, {'exception': {'exception': err_str}}, err_str)
+            self._target_set_finalize(target_port,
+                                      {'exception': {'exception': err_str, 'message': message}},
+                                      err_str)
 
     def target_set_complete(self, target_port, reason):
         """Handle completion of a target_set"""
