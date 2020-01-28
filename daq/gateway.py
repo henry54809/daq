@@ -133,7 +133,7 @@ class Gateway():
 
     def _scan_complete(self):
         LOGGER.info('Gateway %d scan complete', self.port_set)
-        self._scan_finalize()
+        self._scan_finalize(forget=False)
 
     def _scan_error(self, e):
         LOGGER.error('Gateway %d monitor error: %s', self.port_set, e)

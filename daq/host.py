@@ -368,7 +368,7 @@ class ConnectedHost:
 
     def _monitor_error(self, exception):
         LOGGER.error('Target port %d monitor error: %s', self.target_port, exception)
-        self._monitor_cleanup()
+        self._monitor_cleanup(forget=False)
         self.record_result(self.test_name, exception=exception)
         self._state_transition(_STATE.ERROR)
         self.runner.target_set_error(self.target_port, exception)
@@ -400,7 +400,7 @@ class ConnectedHost:
 
     def _monitor_complete(self):
         LOGGER.info('Target port %d scan complete', self.target_port)
-        self._monitor_cleanup()
+        self._monitor_cleanup(forget=False)
         self.record_result('monitor', state=MODE.DONE)
         self._monitor_continue()
 
