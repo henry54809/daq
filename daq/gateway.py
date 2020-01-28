@@ -101,10 +101,13 @@ class Gateway():
         self.activated = True
         self._scan_finalize()
 
-    def _scan_finalize(self):
+    def _scan_finalize(self, forget=True):
         if self._scan_monitor:
-            self.runner.monitor_forget(self._scan_monitor.stream())
-            self._scan_monitor.terminate()
+            nclosed = self._scan_monitor.stream() and not self._scan_monitor.stream().closed:
+            LOGGER.info('TAP forget %s nclosed %s' % (forget, nclosed))
+            if nclosed:
+                self.runner.monitor_forget(self._scan_monitor.stream())
+                self._scan_monitor.terminate()
             self._scan_monitor = None
 
     def allocate_test_port(self):

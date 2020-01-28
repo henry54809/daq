@@ -359,11 +359,14 @@ class ConnectedHost:
             self._monitor_cleanup()
             self._monitor_error(e)
 
-    def _monitor_cleanup(self):
+    def _monitor_cleanup(self, forget=True):
         if self._tcp_monitor:
             LOGGER.info('Target port %d monitor scan complete', self.target_port)
-            self.runner.monitor_forget(self._tcp_monitor.stream())
-            self._tcp_monitor.terminate()
+            nclosed = self._tcp_monitor.stream() and not self._tcp_monitor.stream().closed:
+            LOGGER.info('TAP forget %s nclosed %s' % (forget, nclosed))
+            if nclosed:
+                self.runner.monitor_forget(self._tcp_monitor.stream())
+                self._tcp_monitor.terminate()
             self._tcp_monitor = None
 
     def _monitor_error(self, exception):
