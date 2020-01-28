@@ -103,9 +103,8 @@ class Gateway():
 
     def _scan_finalize(self):
         if self._scan_monitor:
-            if self._scan_monitor.stream() and not self._scan_monitor.stream().closed:
-                self.runner.monitor_forget(self._scan_monitor.stream())
-                self._scan_monitor.terminate()
+            self.runner.monitor_forget(self._scan_monitor.stream())
+            self._scan_monitor.terminate()
             self._scan_monitor = None
 
     def allocate_test_port(self):
