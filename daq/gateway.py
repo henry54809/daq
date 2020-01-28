@@ -103,7 +103,7 @@ class Gateway():
 
     def _scan_finalize(self, forget=True):
         if self._scan_monitor:
-            nclosed = self._scan_monitor.stream() and not self._scan_monitor.stream().closed:
+            nclosed = self._scan_monitor.stream() and not self._scan_monitor.stream().closed
             LOGGER.info('TAP forget %s nclosed %s' % (forget, nclosed))
             if nclosed:
                 self.runner.monitor_forget(self._scan_monitor.stream())
