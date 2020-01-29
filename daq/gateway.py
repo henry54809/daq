@@ -104,9 +104,8 @@ class Gateway():
     def _scan_finalize(self, forget=True):
         if self._scan_monitor:
             nclosed = self._scan_monitor.stream() and not self._scan_monitor.stream().closed
-            if nclosed != forget:
-                LOGGER.warning('TAP forget %s nclosed %s', forget, nclosed)
-            if nclosed:
+            assert nclosed == forget, 'forget and nclosed mismatch'
+            if forget:
                 self.runner.monitor_forget(self._scan_monitor.stream())
                 self._scan_monitor.terminate()
             self._scan_monitor = None

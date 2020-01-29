@@ -363,9 +363,8 @@ class ConnectedHost:
         if self._tcp_monitor:
             LOGGER.info('Target port %d monitor scan complete', self.target_port)
             nclosed = self._tcp_monitor.stream() and not self._tcp_monitor.stream().closed
-            if nclosed != forget:
-                LOGGER.warning('TAP forget %s nclosed %s', forget, nclosed)
-            if nclosed:
+            assert nclosed == forget, 'forget and nclosed mismatch'
+            if forget:
                 self.runner.monitor_forget(self._tcp_monitor.stream())
                 self._tcp_monitor.terminate()
             self._tcp_monitor = None
