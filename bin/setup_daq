@@ -12,5 +12,8 @@ bin/setup_dev
 echo bin/build_daq
 bin/build_daq
 
+echo bin/install_daq
+bin/install_daq
+
 echo Done with setup_daq.
 
