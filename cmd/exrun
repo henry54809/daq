@@ -72,6 +72,10 @@ function DAQ {
     $@ || true
 }
 
+if [ -z `which ifconfig` ]; then
+    export PATH=/sbin:$PATH
+fi
+
 sudo rm -f $cleanup_file
 if [ -n "$ext_loip" ]; then
     autostart bin/switch_local
