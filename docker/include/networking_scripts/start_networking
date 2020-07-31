@@ -59,5 +59,13 @@ echo TAPG TAP2
 curl google.com || true
 echo TAPG TAP3
 
+(
+    while true; do
+        sleep 10
+        date
+        iptables -v -t nat -L | fgrep MASQ || true
+    done
+)
+
 echo Blocking for all eternity.
 ./autorestart_dnsmasq
