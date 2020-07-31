@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 
 LOCAL_IF=${LOCAL_IF:-$HOSTNAME-eth0}
 EXT_IF=eth0
@@ -59,7 +59,7 @@ echo TAPG TAP2
 curl google.com || true
 echo TAPG TAP3
 
-tcpdump -eni $LOCAL_IF port 80 &
+tcpdump --immediate-mode -eni $LOCAL_IF &
 
 (
     while true; do
