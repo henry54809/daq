@@ -127,7 +127,7 @@ head inst/run-port-*/nodes/*/tmp/report.txt
 ls inst/run-port-01/finish/fail01/ | tee -a $TEST_RESULTS
 
 echo TAP TAP
-cat inst/run-port-01/nodes/udmi03/activate.log
+cat inst/run-port-01/nodes/udmi01/activate.log
 echo TAP TAP
 
 # Add the port-01 and port-02 module config into the file
