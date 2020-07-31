@@ -46,7 +46,7 @@ echo dhcp-host=*,ignore >> /etc/dnsmasq.conf
 service ntp start
 
 echo TAPG TAP1
-ping -n 2 google.com || true
+ping -c 2 google.com || true
 echo TAPG TAP2
 curl google.com || true
 echo TAPG TAP3
