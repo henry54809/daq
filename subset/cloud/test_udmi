@@ -5,6 +5,13 @@ source reporting.sh
 REPORT=/tmp/report.txt
 LOG=/tmp/udmi.log
 
+function delay_finish {
+    # Travis doesn't always wait for buffer to flush on exit, so give some time.
+    sleep 10
+}
+
+trap delay_finish EXIT
+
 # Necessary to reach gcp. Should be done by framework but this works for now.
 route add default gw $GATEWAY_IP
 
@@ -22,9 +29,11 @@ message_types="state pointset system"
 device_id=`jq -r .device_id /config/device/module_config.json`
 
 # Do basic network connectivity check
+echo "nameserver 8.8.8.8" >> /etc/resolv.conf
 cat /etc/resolv.conf
 ping -c 2 172.217.164.106 || true # pings are blocked on github actions
 ping -c 2 pubsub.googleapis.com || true
+(curl 64.233.177.95 2>&1 > /dev/null  2>&1 && echo "Can reach 64.233.177.95") || (echo "Can't reach 64.233.177.95"; sleep 10; false)
 (curl pubsub.googleapis.com 2>&1 > /dev/null  2>&1 && echo "Can reach pubsub.googleapis.com") || (echo "Can't reach pubsub.googleapis.com"; sleep 10; false)
 
 if [ "$device_id" == null ]; then
