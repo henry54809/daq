@@ -28,11 +28,20 @@ message_types="state pointset system"
 
 device_id=`jq -r .device_id /config/device/module_config.json`
 
+echo TAPU TAP1
+LOCAL_IFACE=`hostname`-eth0
+tcpdump -eni $LOCAL_IFACE &
+TPID=$!
+
+echo TAPU TAP2
 # Do basic network connectivity check
 cat /etc/resolv.conf
 ping -c 2 172.217.164.106 || true # pings are blocked on github actions
 ping -c 2 pubsub.googleapis.com || true
 (curl pubsub.googleapis.com 2>&1 > /dev/null  2>&1 && echo "Can reach pubsub.googleapis.com") || (echo "Can't reach pubsub.googleapis.com"; sleep 10; false)
+
+echo TAPU TAP3
+kill $TPID || true
 
 if [ "$device_id" == null ]; then
     skip="No device id"
