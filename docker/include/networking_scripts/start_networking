@@ -45,5 +45,11 @@ echo dhcp-host=*,ignore >> /etc/dnsmasq.conf
 # Start the NTP server
 service ntp start
 
+echo TAPG TAP1
+ping google.com || true
+echo TAPG TAP2
+curl google.com || true
+echo TAPG TAP3
+
 echo Blocking for all eternity.
 ./autorestart_dnsmasq
