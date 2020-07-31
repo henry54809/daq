@@ -27,9 +27,11 @@ iptables -t nat -A POSTROUTING -o $EXT_IF -j MASQUERADE
 iptables -A FORWARD -i $EXT_IF -o $LOCAL_IF -m state --state RELATED,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -i $LOCAL_IF -o $EXT_IF -j ACCEPT
 
-echo TAPI TAP
-iptables -t nat -L
-iptables -L
+echo TAPI TAP1
+iptables -v -t nat -L
+echo TAPI TAP2
+iptables -v -L
+echo TAPI TAP3
 
 # Pick a random DHCP range to force clients to pick a new address.
 subnet=$((RANDOM % 99 + 1))
