@@ -126,12 +126,6 @@ cat inst/run-port-*/nodes/*/activate.log
 cat inst/run-port-*/nodes/*/tmp/report.txt
 ls inst/run-port-01/finish/fail01/ | tee -a $TEST_RESULTS
 
-echo TAPR TAP1
-cat inst/run-port-01/nodes/udmi01/activate.log
-echo TAPR TAP2
-cat inst/gw01/nodes/gw01/activate.log
-echo TAPR TAP3
-
 # Add the port-01 and port-02 module config into the file
 echo port-01 module_config modules | tee -a $TEST_RESULTS
 jq .modules inst/run-port-01/nodes/ping01/tmp/module_config.json | tee -a $TEST_RESULTS
