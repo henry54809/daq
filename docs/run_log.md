@@ -58,7 +58,7 @@ No LSB modules are available.
 Entering virtual python environment...
 Using python3 at /home/username/daq/venv/bin/python3
 Prepending /home/username/daq/binhack to PATH
-Executing: python3 daq/daq.py local/system.yaml -s usi_setup.url=172.17.0.1:5000
+Executing: python3 daq/entry.py local/system.yaml -s usi_setup.url=172.17.0.1:5000
 processing arg: local/system.yaml
 Including config file /home/username/daq/local/../config/system/all.conf
 Including config file /home/username/daq/config/system/default.yaml
